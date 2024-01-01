@@ -10,7 +10,7 @@ using System.Windows.Input;
 using System.Windows;
 using WpfApp3.Commands;
 using WpfApp3.Models;
-using WpfApp3.Units;
+using WpfApp3.Service;
 
 namespace WpfApp3.ViewModels
 {
@@ -82,7 +82,7 @@ namespace WpfApp3.ViewModels
             }
         }
 
-        private ObservableCollection<string> _subjectsList = DataWorker.GetAllSubjects2();
+        private ObservableCollection<string> _subjectsList = DataWorker.GetSubjectsList();
         public ObservableCollection<string> SubjectsList
         {
             get
@@ -97,19 +97,8 @@ namespace WpfApp3.ViewModels
         }
         public static string StudentSubject { get; set; }
 
-        private List<int> _score = new List<int> { 5, 4, 3, 2, 1 };
-        public List<int> Score
-        {
-            get
-            {
-                return _score;
-            }
-            set
-            {
-                _score = value;
-                OnPropertyChanged();
-            }
-        }
+        public IReadOnlyList<int> Score { get; private set; } = new List<int> { 5, 4, 3, 2, 1 };
+ 
         public static int StudentScore { get; set; } = 0;
 
         private string _newSubject;
@@ -137,6 +126,8 @@ namespace WpfApp3.ViewModels
             DataWorker.UpdateStudentJson(StudentsScoreList);
             MessageBox.Show(FirstName + " " + LastName + " Score Added!");
 
+
+            /*Correcting subject averege*/
             var found = SubjectsScoreList.FirstOrDefault(x => x.Subject == StudentSubject);
             int tempScoreNum = found.ScoresNum + 1;
             int tempScoreSum = found.ScoresSum + StudentScore;
@@ -155,18 +146,20 @@ namespace WpfApp3.ViewModels
             return true;
         }
 
-        //Avg button realization
+        //Averege button realization
         public ICommand AvgCommand { get; set; }
         private void StuAvg(object paremter = null)
         {
-            double result = DataWorker.AvgScore(FirstName, LastName, StudentSubject, StudentsScoreList);
-            if (result > 1)
+            try
             {
-                MessageBox.Show(FirstName + " " + LastName + " averege score is " + result.ToString("N2"));
+                double result = StudentsScoreList
+                    .Where(x => x.FirstName == FirstName && x.LastName == LastName && x.Subject == StudentSubject)
+                    .Average(x => x.Score);
+                MessageBox.Show(FirstName + " " + LastName + " average score is " + result.ToString("N2"));
             }
-            else
+            catch
             {
-                MessageBox.Show(FirstName + " " + LastName + " student or " + StudentSubject + "scores didn't found!!!");
+                MessageBox.Show(FirstName + " " + LastName + " student or " + StudentSubject + " scores didn't found!!!");
             }
         }
 
@@ -179,7 +172,7 @@ namespace WpfApp3.ViewModels
             return true;
         }
 
-        //NewSub button realization
+        //Add subject button realization
         public ICommand NewSubCommand { get; set; }
         private void NewSub(object paremter = null)
         {

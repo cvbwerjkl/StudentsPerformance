@@ -10,7 +10,7 @@ using System.Windows.Documents;
 using WpfApp3.Models;
 
 
-namespace WpfApp3.Units
+namespace WpfApp3.Service
 {
     internal class DataWorker
     {
@@ -38,7 +38,7 @@ namespace WpfApp3.Units
             }
         }
 
-        public static ObservableCollection<string> GetAllSubjects2()
+        public static ObservableCollection<string> GetSubjectsList()
         {
             try
             {
@@ -54,20 +54,6 @@ namespace WpfApp3.Units
         public static void UpdateStudentJson(ObservableCollection<StudentScore> _studentsList)
         {
             File.WriteAllText(@"studentsDB.json", JsonConvert.SerializeObject(_studentsList));
-        }
-
-        public static double AvgScore(string _firstName, string _lastName, string _subject, ObservableCollection<StudentScore> _studentsList)
-        {
-            List<int> allscore = (from StudentScore in _studentsList where StudentScore.FirstName == _firstName && StudentScore.LastName == _lastName && StudentScore.Subject == _subject select StudentScore.Score).ToList();
-            if (allscore.Any())
-            {
-                double avgScore = allscore.Average();
-                return avgScore;
-            }
-            else
-            {
-                return 0;
-            }
         }
 
         public static void UpdateSubjectJson(ObservableCollection<SubjectScore> _subjectsList)

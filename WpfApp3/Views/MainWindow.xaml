@@ -68,7 +68,7 @@
                 Command="{Binding AddCommand}"
                 Width="60"/>
             <Button Name="btnAvg"
-                Content="AVEREGE"
+                Content="AVERAGE"
                 Command="{Binding AvgCommand}"
                 Width="60"/>
         </StackPanel>
@@ -120,7 +120,7 @@
                 <DataGridTextColumn Header="Subject"
                                 Width="auto"
                                 Binding="{Binding Subject}" />
-                <DataGridTextColumn Header="Averege"
+                <DataGridTextColumn Header="Average"
                                 Width="auto"
                                 Binding="{Binding Path=AvgScore, StringFormat={}{0:n2}}"/>
             </DataGrid.Columns>
