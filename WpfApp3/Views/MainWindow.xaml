@@ -59,7 +59,7 @@
               Grid.Row="3"
               Grid.Column="1" 
               ItemsSource="{Binding Score}"
-              SelectedItem="{Binding StudentScore}"/>
+              SelectedItem="{Binding SelectedScore}"/>
         <StackPanel Orientation="Horizontal"
                 Grid.Row="4"
                 Grid.Column="1">
@@ -71,13 +71,18 @@
                 Content="AVERAGE"
                 Command="{Binding AvgCommand}"
                 Width="60"/>
+            <Button Name="btnDel"
+                Content="DELETE SCORE"
+                Command="{Binding DelCommand}"
+                Width="90"/>
         </StackPanel>
 
         <DataGrid Name="dgStudents"
               AutoGenerateColumns="False"
               Grid.Row="6"
               Grid.Column="1"
-              ItemsSource="{Binding StudentsScoreList}">
+              ItemsSource="{Binding StudentsScoreList}"
+              SelectedItem="{Binding SelectedStudent}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="First Name"
                                 Width="auto"
