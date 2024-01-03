@@ -12,7 +12,7 @@ using WpfApp3.Models;
 
 namespace WpfApp3.Service
 {
-    internal class DataWorker
+    public class JsonWorker
     {
         public static ObservableCollection<StudentScore> GetAllStudents()
         {
@@ -38,19 +38,6 @@ namespace WpfApp3.Service
             }
         }
 
-        public static ObservableCollection<string> GetSubjectsList()
-        {
-            try
-            {
-                List<string> ans = (from SubjectScore in JsonConvert.DeserializeObject<ObservableCollection<SubjectScore>>(File.ReadAllText(@"subjectsDB.json")) select SubjectScore.Subject).ToList() ;
-                return new ObservableCollection<string>(ans);
-            }
-            catch
-            {
-                return new ObservableCollection<string>();
-            }
-        }
-
         public static void UpdateStudentJson(ObservableCollection<StudentScore> _studentsList)
         {
             File.WriteAllText(@"studentsDB.json", JsonConvert.SerializeObject(_studentsList));
@@ -59,6 +46,19 @@ namespace WpfApp3.Service
         public static void UpdateSubjectJson(ObservableCollection<SubjectScore> _subjectsList)
         {
             File.WriteAllText(@"subjectsDB.json", JsonConvert.SerializeObject(_subjectsList));
+        }
+
+        public static ObservableCollection<string> GetSubjectsList()
+        {
+            try
+            {
+                List<string> ans = (from SubjectScore in JsonConvert.DeserializeObject<ObservableCollection<SubjectScore>>(File.ReadAllText(@"subjectsDB.json")) select SubjectScore.Subject).ToList();
+                return new ObservableCollection<string>(ans);
+            }
+            catch
+            {
+                return new ObservableCollection<string>();
+            }
         }
     }
 }

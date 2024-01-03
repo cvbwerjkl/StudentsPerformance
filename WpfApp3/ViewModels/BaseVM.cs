@@ -26,7 +26,7 @@ namespace WpfApp3.ViewModels
 
         #region DATA
 
-        private ObservableCollection<StudentScore> _studentsScoreList = DataWorker.GetAllStudents();
+        private ObservableCollection<StudentScore> _studentsScoreList = JsonWorker.GetAllStudents();
         public ObservableCollection<StudentScore> StudentsScoreList
         {
             get
@@ -40,7 +40,7 @@ namespace WpfApp3.ViewModels
             }
         }
 
-        private ObservableCollection<SubjectScore> _subjectsScoreList = DataWorker.GetAllSubjects();
+        private ObservableCollection<SubjectScore> _subjectsScoreList = JsonWorker.GetAllSubjects();
         public ObservableCollection<SubjectScore> SubjectsScoreList
         {
             get
@@ -82,7 +82,7 @@ namespace WpfApp3.ViewModels
             }
         }
 
-        private ObservableCollection<string> _subjectsList = DataWorker.GetSubjectsList();
+        private ObservableCollection<string> _subjectsList = JsonWorker.GetSubjectsList();
         public ObservableCollection<string> SubjectsList
         {
             get
@@ -124,20 +124,16 @@ namespace WpfApp3.ViewModels
         public ICommand AddCommand { get; set; }
         private void StuAdd(object paremter = null)
         {
+            /*Adding and ordering students score list*/
             StudentsScoreList.Add(new StudentScore { FirstName = _firstName, LastName = _lastName, Subject = StudentSubject, Score = SelectedScore });
-            //StudentsScoreList.OrderBy(x => x.LastName);
-            DataWorker.UpdateStudentJson(StudentsScoreList);
+            StudentsScoreList = new ObservableCollection<StudentScore>(StudentsScoreList.OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ThenBy(x => x.Subject).ThenBy(x => x.Score));
+            JsonWorker.UpdateStudentJson(StudentsScoreList);
             MessageBox.Show(FirstName + " " + LastName + " Score Added!");
 
-
-            /*Correcting subject averege*/
-            var found = SubjectsScoreList.FirstOrDefault(x => x.Subject == StudentSubject);
-            int tempScoreNum = found.ScoresNum + 1;
-            int tempScoreSum = found.ScoresSum + SelectedScore;
-            double tempAvgScore = (double)tempScoreSum / tempScoreNum;
-            SubjectsScoreList.Remove(found);
-            SubjectsScoreList.Add(new SubjectScore { Subject = StudentSubject, ScoresNum = tempScoreNum, ScoresSum = tempScoreSum, AvgScore = tempAvgScore });
-            DataWorker.UpdateSubjectJson(SubjectsScoreList);
+            /*Updating subjects list*/
+            ListWorker.SubjectAvgUp(SubjectsScoreList, StudentSubject, SelectedScore);
+            SubjectsScoreList = new ObservableCollection<SubjectScore>(SubjectsScoreList.OrderBy(x => x.Subject));
+            JsonWorker.UpdateSubjectJson(SubjectsScoreList);
         }
 
         private bool CanAdd(object parameter = null)
@@ -183,9 +179,9 @@ namespace WpfApp3.ViewModels
             {
                 SubjectsScoreList.Add(new SubjectScore { Subject = NewSubject, ScoresNum = 0, ScoresSum = 0, AvgScore = 0 });
                 SubjectsList.Add(NewSubject);
-                //SubjectsList.OrderBy(x => x);
-                //SubjectsScoreList.OrderBy(x => x.Subject);
-                DataWorker.UpdateSubjectJson(SubjectsScoreList);
+                SubjectsList = new ObservableCollection<string>(SubjectsList.OrderBy(x => x));
+                SubjectsScoreList = new ObservableCollection<SubjectScore>(SubjectsScoreList.OrderBy(x => x.Subject));
+                JsonWorker.UpdateSubjectJson(SubjectsScoreList);
                 MessageBox.Show(NewSubject + " added!!!");
             }
             else
@@ -208,27 +204,15 @@ namespace WpfApp3.ViewModels
         public ICommand DelCommand { get; set; }
         private void StuDel(object paremter = null)
         {
-            /*Correcting subject averege*/
-            var found = SubjectsScoreList.FirstOrDefault(x => x.Subject == SelectedStudent.Subject);
-            int tempScoreNum = found.ScoresNum - 1;
-            int tempScoreSum = found.ScoresSum - SelectedStudent.Score;
-            if (tempScoreNum != 0)
-            {
-                double tempAvgScore = (double)tempScoreSum / tempScoreNum;
-                SubjectsScoreList.Remove(found);
-                SubjectsScoreList.Add(new SubjectScore { Subject = SelectedStudent.Subject, ScoresNum = tempScoreNum, ScoresSum = tempScoreSum, AvgScore = tempAvgScore });
-            }
-            else
-            {
-                SubjectsScoreList.Remove(found);
-                SubjectsScoreList.Add(new SubjectScore { Subject = SelectedStudent.Subject, ScoresNum = 0, ScoresSum = 0, AvgScore = 0 });
-            }
-            DataWorker.UpdateSubjectJson(SubjectsScoreList);
+            /*Updating subjects list*/
+            ListWorker.SubjectAvgDown(SubjectsScoreList, SelectedStudent.Subject, SelectedStudent.Score);
+            SubjectsScoreList = new ObservableCollection<SubjectScore>(SubjectsScoreList.OrderBy(x => x.Subject));
+            JsonWorker.UpdateSubjectJson(SubjectsScoreList);
 
             /*Removing score*/
             MessageBox.Show(SelectedStudent.FirstName + " " + SelectedStudent.LastName + " Score Deleted!");
             StudentsScoreList.Remove(StudentsScoreList.First(x => x.FirstName == SelectedStudent.FirstName && x.LastName == SelectedStudent.LastName && x.Subject == SelectedStudent.Subject && x.Score == SelectedStudent.Score));
-            DataWorker.UpdateStudentJson(StudentsScoreList);
+            JsonWorker.UpdateStudentJson(StudentsScoreList);
         }
 
         private bool CanDel(object parameter = null)

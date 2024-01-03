@@ -69,7 +69,8 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Models\StudentScore.cs" />
     <Compile Include="Models\SubjectScore.cs" />
-    <Compile Include="Service\DataWorker.cs" />
+    <Compile Include="Service\JsonWorker.cs" />
+    <Compile Include="Service\ListWorker.cs" />
     <Compile Include="ViewModels\BaseVM.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
