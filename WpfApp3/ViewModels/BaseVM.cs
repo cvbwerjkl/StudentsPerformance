@@ -204,15 +204,21 @@ namespace WpfApp3.ViewModels
         public ICommand DelCommand { get; set; }
         private void StuDel(object paremter = null)
         {
-            /*Updating subjects list*/
-            ListWorker.SubjectAvgDown(SubjectsScoreList, SelectedStudent.Subject, SelectedStudent.Score);
-            SubjectsScoreList = new ObservableCollection<SubjectScore>(SubjectsScoreList.OrderBy(x => x.Subject));
-            JsonWorker.UpdateSubjectJson(SubjectsScoreList);
+            if (MessageBox.Show("Do you want to delete " + SelectedStudent.FirstName + " " + SelectedStudent.LastName + " " + SelectedStudent.Subject + " score?",
+                    "Delete score",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                /*Updating subjects list*/
+                ListWorker.SubjectAvgDown(SubjectsScoreList, SelectedStudent.Subject, SelectedStudent.Score);
+                SubjectsScoreList = new ObservableCollection<SubjectScore>(SubjectsScoreList.OrderBy(x => x.Subject));
+                JsonWorker.UpdateSubjectJson(SubjectsScoreList);
 
-            /*Removing score*/
-            MessageBox.Show(SelectedStudent.FirstName + " " + SelectedStudent.LastName + " Score Deleted!");
-            StudentsScoreList.Remove(StudentsScoreList.First(x => x.FirstName == SelectedStudent.FirstName && x.LastName == SelectedStudent.LastName && x.Subject == SelectedStudent.Subject && x.Score == SelectedStudent.Score));
-            JsonWorker.UpdateStudentJson(StudentsScoreList);
+                /*Removing score*/
+                MessageBox.Show(SelectedStudent.FirstName + " " + SelectedStudent.LastName + " Score Deleted!");
+                StudentsScoreList.Remove(StudentsScoreList.First(x => x.FirstName == SelectedStudent.FirstName && x.LastName == SelectedStudent.LastName && x.Subject == SelectedStudent.Subject && x.Score == SelectedStudent.Score));
+                JsonWorker.UpdateStudentJson(StudentsScoreList);
+            }
         }
 
         private bool CanDel(object parameter = null)
