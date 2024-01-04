@@ -12,7 +12,7 @@ using WpfApp3.Models;
 
 namespace WpfApp3.Service
 {
-    public class JsonWorker
+    public static class JsonWorker
     {
         public static ObservableCollection<StudentScore> GetAllStudents()
         {

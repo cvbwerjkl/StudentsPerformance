@@ -9,8 +9,9 @@ using WpfApp3.Models;
 
 namespace WpfApp3.Service
 {
-    public class ListWorker
+    public static class ListWorker
     {
+        /*change subject averege when score added*/
         public static void SubjectAvgUp(ObservableCollection<SubjectScore> SubjectsScoreList, string StudentSubject, int SelectedScore)
         {
             var found = SubjectsScoreList.First(x => x.Subject == StudentSubject);
@@ -21,6 +22,7 @@ namespace WpfApp3.Service
             SubjectsScoreList.Add(new SubjectScore { Subject = StudentSubject, ScoresNum = tempScoreNum, ScoresSum = tempScoreSum, AvgScore = tempAvgScore });
         }
 
+        /*change subject averege when score deleted*/
         public static void SubjectAvgDown(ObservableCollection<SubjectScore> SubjectsScoreList, string StudentSubject, int SelectedScore)
         {
             var found = SubjectsScoreList.First(x => x.Subject == StudentSubject);

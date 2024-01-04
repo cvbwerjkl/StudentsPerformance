@@ -11,10 +11,10 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="250"/>
-            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="40"/>
             <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="40"/>
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -79,8 +79,11 @@
 
         <DataGrid Name="dgStudents"
               AutoGenerateColumns="False"
+              IsReadOnly="True"
               Grid.Row="6"
               Grid.Column="1"
+              GridLinesVisibility="None"
+              Background="White" 
               ItemsSource="{Binding StudentsScoreList}"
               SelectedItem="{Binding SelectedStudent}">
             <DataGrid.Columns>
@@ -118,8 +121,11 @@
 
         <DataGrid Name="dgSubjects"
               AutoGenerateColumns="False"
+              IsReadOnly="True"
               Grid.Row="6"
               Grid.Column="4"
+              Background="White" 
+              GridLinesVisibility="None"
               ItemsSource="{Binding SubjectsScoreList}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Subject"
