@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,6 +17,7 @@ namespace WpfApp3.Service
             int tempScoreNum = found.ScoresNum + 1;
             int tempScoreSum = found.ScoresSum + SelectedScore;
             double tempAvgScore = (double)tempScoreSum / tempScoreNum;
+            
             SubjectsScoreList.Remove(found);
             SubjectsScoreList.Add(new SubjectScore { Subject = StudentSubject, ScoresNum = tempScoreNum, ScoresSum = tempScoreSum, AvgScore = tempAvgScore });
         }
