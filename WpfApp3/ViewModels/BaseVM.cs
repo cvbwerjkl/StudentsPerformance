@@ -97,7 +97,7 @@ namespace WpfApp3.ViewModels
         }
         public static string StudentSubject { get; set; }
 
-        public IReadOnlyList<int> Score { get; private set; } = new List<int> { 5, 4, 3, 2, 1 };
+        public IEnumerable<int> Score { get; private set; } = Enumerable.Range(1, 5);
         public static int SelectedScore { get; set; } = 0;
 
         private string _newSubject;
@@ -124,16 +124,24 @@ namespace WpfApp3.ViewModels
         public ICommand AddCommand { get; set; }
         private void StuAdd(object paremter = null)
         {
-            /*Adding and ordering students score list*/
-            StudentsScoreList.Add(new StudentScore { FirstName = _firstName, LastName = _lastName, Subject = StudentSubject, Score = SelectedScore });
-            StudentsScoreList = new ObservableCollection<StudentScore>(StudentsScoreList.OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ThenBy(x => x.Subject).ThenBy(x => x.Score));
-            JsonWorker.UpdateStudentJson(StudentsScoreList);
-            MessageBox.Show(FirstName + " " + LastName + " Score Added!");
+            if (_firstName.All(char.IsLetter) && _lastName.All(char.IsLetter))
+            {
+                /*Adding and ordering students score list*/
+                StudentsScoreList.Add(new StudentScore { FirstName = _firstName, LastName = _lastName, Subject = StudentSubject, Score = SelectedScore });
+                StudentsScoreList = new ObservableCollection<StudentScore>(StudentsScoreList.OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ThenBy(x => x.Subject).ThenBy(x => x.Score));
+                JsonWorker.UpdateStudentJson(StudentsScoreList);
+                MessageBox.Show(FirstName + " " + LastName + " Score Added!");
 
-            /*Updating subjects list*/
-            ListWorker.SubjectAvgUp(SubjectsScoreList, StudentSubject, SelectedScore);
-            SubjectsScoreList = new ObservableCollection<SubjectScore>(SubjectsScoreList.OrderBy(x => x.Subject));
-            JsonWorker.UpdateSubjectJson(SubjectsScoreList);
+                /*Updating subjects list*/
+                ListWorker.SubjectAvgUp(SubjectsScoreList, StudentSubject, SelectedScore);
+                SubjectsScoreList = new ObservableCollection<SubjectScore>(SubjectsScoreList.OrderBy(x => x.Subject));
+                JsonWorker.UpdateSubjectJson(SubjectsScoreList);
+            }
+            else 
+            {
+                MessageBox.Show("Student first name and last name have to contain only letters!!!");
+            }
+            
         }
 
         private bool CanAdd(object parameter = null)
@@ -149,22 +157,16 @@ namespace WpfApp3.ViewModels
         public ICommand AvgCommand { get; set; }
         private void StuAvg(object paremter = null)
         {
-            try
-            {
-                double result = StudentsScoreList
-                    .Where(x => x.FirstName == FirstName && x.LastName == LastName && x.Subject == StudentSubject)
-                    .Average(x => x.Score);
-                MessageBox.Show(FirstName + " " + LastName + " average score is " + result.ToString("N2"));
-            }
-            catch
-            {
-                MessageBox.Show(FirstName + " " + LastName + " student or " + StudentSubject + " scores didn't found!!!");
-            }
+
+            double result = StudentsScoreList
+                .Where(x => x.FirstName == SelectedStudent.FirstName && x.LastName == SelectedStudent.LastName && x.Subject == SelectedStudent.Subject)
+                .Average(x => x.Score);
+            MessageBox.Show(SelectedStudent.FirstName + " " + SelectedStudent.LastName + " average " + SelectedStudent.Subject + " score is " + result.ToString("N2"));
         }
 
         private bool CanAvg(object parameter = null)
         {
-            if (string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(LastName) || StudentSubject == null)
+            if (SelectedStudent == null)
             {
                 return false;
             }
@@ -175,7 +177,7 @@ namespace WpfApp3.ViewModels
         public ICommand NewSubCommand { get; set; }
         private void NewSub(object paremter = null)
         {
-            if (SubjectsList.Where(x => x == NewSubject).Count() == 0)
+            if (SubjectsList.Where(x => x == NewSubject).Count() == 0 && NewSubject.All(char.IsLetter))
             {
                 SubjectsScoreList.Add(new SubjectScore { Subject = NewSubject, ScoresNum = 0, ScoresSum = 0, AvgScore = 0 });
                 SubjectsList.Add(NewSubject);
@@ -183,6 +185,10 @@ namespace WpfApp3.ViewModels
                 SubjectsScoreList = new ObservableCollection<SubjectScore>(SubjectsScoreList.OrderBy(x => x.Subject));
                 JsonWorker.UpdateSubjectJson(SubjectsScoreList);
                 MessageBox.Show(NewSubject + " added!!!");
+            }
+            else if (!NewSubject.All(char.IsLetter))
+            {
+                MessageBox.Show("Subject name have to contain only letters!!!");
             }
             else
             {
