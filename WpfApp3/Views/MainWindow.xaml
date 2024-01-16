@@ -80,7 +80,7 @@
         <DataGrid Name="dgStudents"
               AutoGenerateColumns="False"
               IsReadOnly="True"
-              Grid.Row="6"
+              Grid.Row="5"
               Grid.Column="1"
               GridLinesVisibility="None"
               Background="White" 

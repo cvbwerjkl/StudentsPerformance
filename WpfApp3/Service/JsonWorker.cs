@@ -14,11 +14,15 @@ namespace WpfApp3.Service
 {
     public static class JsonWorker
     {
+        private const string STUDENTS_FILNAME = "studentsDB.json";
+        private const string SUBJECTS_FILENAME = "subjectsDB.json";
+
+
         public static ObservableCollection<StudentScore> GetAllStudents()
         {
             try
             {
-                return JsonConvert.DeserializeObject<ObservableCollection<StudentScore>>(File.ReadAllText(@"studentsDB.json"));
+                return JsonConvert.DeserializeObject<ObservableCollection<StudentScore>>(File.ReadAllText(@STUDENTS_FILNAME));
             }
             catch
             {
@@ -30,7 +34,7 @@ namespace WpfApp3.Service
         {
             try
             {
-                return JsonConvert.DeserializeObject<ObservableCollection<SubjectScore>>(File.ReadAllText(@"subjectsDB.json"));
+                return JsonConvert.DeserializeObject<ObservableCollection<SubjectScore>>(File.ReadAllText(@SUBJECTS_FILENAME));
             }
             catch
             {
@@ -40,19 +44,21 @@ namespace WpfApp3.Service
 
         public static void UpdateStudentJson(ObservableCollection<StudentScore> _studentsList)
         {
-            File.WriteAllText(@"studentsDB.json", JsonConvert.SerializeObject(_studentsList));
+            File.WriteAllText(@STUDENTS_FILNAME, JsonConvert.SerializeObject(_studentsList));
         }
 
         public static void UpdateSubjectJson(ObservableCollection<SubjectScore> _subjectsList)
         {
-            File.WriteAllText(@"subjectsDB.json", JsonConvert.SerializeObject(_subjectsList));
+            File.WriteAllText(@SUBJECTS_FILENAME, JsonConvert.SerializeObject(_subjectsList));
         }
 
         public static ObservableCollection<string> GetSubjectsList()
         {
             try
             {
-                List<string> ans = (from SubjectScore in JsonConvert.DeserializeObject<ObservableCollection<SubjectScore>>(File.ReadAllText(@"subjectsDB.json")) select SubjectScore.Subject).ToList();
+                var content = File.ReadAllText(@SUBJECTS_FILENAME);
+                var subjectScore = JsonConvert.DeserializeObject<ObservableCollection<SubjectScore>>(content);
+                var ans = subjectScore.Select(x => x.Subject);
                 return new ObservableCollection<string>(ans);
             }
             catch

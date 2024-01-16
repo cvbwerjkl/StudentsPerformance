@@ -95,10 +95,36 @@ namespace WpfApp3.ViewModels
                 OnPropertyChanged();
             }
         }
-        public static string StudentSubject { get; set; }
+
+        private string _studentSubject;
+        public string StudentSubject
+        {
+            get
+            {
+                return _studentSubject;
+            }
+            set
+            {
+                _studentSubject = value;
+                OnPropertyChanged();
+            }
+        }
 
         public IEnumerable<int> Score { get; private set; } = Enumerable.Range(1, 5);
-        public static int SelectedScore { get; set; } = 0;
+
+        private int _selectedScore;
+        public int SelectedScore
+        {
+            get
+            {
+                return _selectedScore;
+            }
+            set
+            {
+                _selectedScore = value;
+                OnPropertyChanged();
+            }
+        }
 
         private string _newSubject;
         public string NewSubject
@@ -114,7 +140,23 @@ namespace WpfApp3.ViewModels
             }
         }
 
-        public static StudentScore SelectedStudent { get; set; } = null;
+        private StudentScore _selectedStudend;
+        public StudentScore SelectedStudent
+        {
+            get
+            {
+                return _selectedStudend;
+
+            }
+            set
+            {
+                _selectedStudend = value;
+                FirstName = _selectedStudend.FirstName;
+                LastName = _selectedStudend.LastName;
+                StudentSubject = _selectedStudend.Subject;
+                SelectedScore = _selectedStudend.Score;
+            }
+        }
 
         #endregion
 
